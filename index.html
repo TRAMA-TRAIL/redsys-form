@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Iniciando pago...</title>
+  <script>
+    window.onload = function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const importe = urlParams.get('importe');
+
+      // Generar número de pedido incremental (usa localStorage para simularlo)
+      let orderId = localStorage.getItem("redsys_order_id") || "0";
+      orderId = (parseInt(orderId) + 1).toString();
+      localStorage.setItem("redsys_order_id", orderId);
+
+      // Rellenar número con 8 dígitos (ej: 1 → 00000001)
+      const paddedOrderId = orderId.padStart(8, '0');
+
+      // Asignar al formulario
+      document.querySelector("input[name='Ds_Merchant_Order']").value = paddedOrderId;
+
+      if (importe && !isNaN(importe)) {
+        // Convertir a céntimos y asignar al campo
+        document.querySelector("input[name='Ds_Merchant_Amount']").value = Math.round(parseFloat(importe) * 100);
+      }
+
+      // Enviar formulario automáticamente después de 1 segundo
+      setTimeout(() => {
+        document.forms[0].submit();
+      }, 1000);
+    };
+  </script>
+</head>
+<body>
+
+<h2>Procesando tu pago…</h2>
+
+<form action="https://sis-t.redsys.es:25443/sis/realizarPago"  method="POST">
+  <!-- Campo dinámico -->
+  <input type="hidden" name="Ds_Merchant_Amount" value="">
+
+  <!-- Datos estáticos -->
+  <input type="hidden" name="Ds_Merchant_Order" value="">
+  <input type="hidden" name="Ds_Merchant_MerchantCode" value="170043343">
+  <input type="hidden" name="Ds_Merchant_Currency" value="978"> <!-- Euros -->
+  <input type="hidden" name="Ds_Merchant_TransactionType" value="0"> <!-- Venta normal -->
+  <input type="hidden" name="Ds_Merchant_Terminal" value="1"> <!-- Terminal por defecto -->
+
+  <!-- Opcionales por ahora -->
+  <input type="hidden" name="Ds_Merchant_MerchantURL" value=""> <!-- No usamos por ahora -->
+  <input type="hidden" name="Ds_Merchant_UrlOK" value=""> <!-- No usamos por ahora -->
+  <input type="hidden" name="Ds_Merchant_UrlKO" value=""> <!-- No usamos por ahora -->
+</form>
+
+</body>
+</html>
