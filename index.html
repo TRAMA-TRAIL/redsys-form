@@ -13,8 +13,8 @@
       orderId = (parseInt(orderId) + 1).toString();
       localStorage.setItem("redsys_order_id", orderId);
 
-      // Rellenar número con 8 dígitos (ej: 1 → 00000001)
-      const paddedOrderId = orderId.padStart(8, '0');
+      // Rellenar número con 5 dígitos (ej: 1 → 00001)
+      const paddedOrderId = orderId.padStart(5, '0');
 
       // Asignar al formulario
       document.querySelector("input[name='Ds_Merchant_Order']").value = paddedOrderId;
@@ -35,7 +35,7 @@
 
 <h2>Procesando tu pago…</h2>
 
-<form action="https://sis-t.redsys.es:25443/sis/realizarPago"  method="POST">
+<form action="https://sis-t.redsys.es:25443/sis/tpv.jsp"  method="POST">
   <!-- Campo dinámico -->
   <input type="hidden" name="Ds_Merchant_Amount" value="">
 
@@ -44,12 +44,15 @@
   <input type="hidden" name="Ds_Merchant_MerchantCode" value="170043343">
   <input type="hidden" name="Ds_Merchant_Currency" value="978"> <!-- Euros -->
   <input type="hidden" name="Ds_Merchant_TransactionType" value="0"> <!-- Venta normal -->
-  <input type="hidden" name="Ds_Merchant_Terminal" value="1"> <!-- Terminal por defecto -->
+  <input type="hidden" name="Ds_Merchant_Terminal" value="100"> <!-- Terminal corregido -->
 
   <!-- Opcionales por ahora -->
   <input type="hidden" name="Ds_Merchant_MerchantURL" value=""> <!-- No usamos por ahora -->
   <input type="hidden" name="Ds_Merchant_UrlOK" value=""> <!-- No usamos por ahora -->
   <input type="hidden" name="Ds_Merchant_UrlKO" value=""> <!-- No usamos por ahora -->
+
+  <!-- Opcional: Nombre del comercio -->
+  <input type="hidden" name="Ds_Merchant_MerchantName" value="Trama Trail">
 </form>
 
 </body>
