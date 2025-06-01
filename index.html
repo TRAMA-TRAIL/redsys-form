@@ -2,59 +2,20 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Iniciando pago...</title>
-  <script>
-    window.onload = function () {
-      const urlParams = new URLSearchParams(window.location.search);
-      const importe = urlParams.get('importe');
-
-      // Generar número de pedido incremental
-      let orderId = localStorage.getItem("redsys_order_id") || "0";
-      orderId = (parseInt(orderId) + 1).toString();
-      localStorage.setItem("redsys_order_id", orderId);
-
-      // Formato de 5 dígitos
-      const paddedOrderId = orderId.padStart(5, '0');
-
-      // Asignar al formulario
-      document.querySelector("input[name='Ds_Merchant_Order']").value = paddedOrderId;
-
-      if (importe && !isNaN(importe)) {
-        // Convertir a céntimos
-        const amountCents = Math.round(parseFloat(importe) * 100).toString();
-        document.querySelector("input[name='Ds_Merchant_Amount']").value = amountCents;
-      }
-
-      // Enviar formulario automáticamente
-      setTimeout(() => {
-        document.forms[0].submit();
-      }, 1000);
-    };
-  </script>
+  <title>Prueba Redsys</title>
 </head>
-<body>
+<body onload="document.forms[0].submit();">
 
-<h2>Procesando tu pago…</h2>
+<h2>Redirigiendo al TPV Virtual...</h2>
 
-<form action="https://sis-t.redsys.es:25443/sis/realizarPago"  method="POST">
-  <!-- Datos dinámicos -->
-  <input type="hidden" name="Ds_Merchant_Amount" value="">
-  <input type="hidden" name="Ds_Merchant_Order" value="">
-
-  <!-- Datos estáticos -->
+<form action="https://sis-t.redsys.es:25443/sis/tpv.jsp"  method="POST">
+  <!-- Campos obligatorios -->
+  <input type="hidden" name="Ds_Merchant_Amount" value="4900">
+  <input type="hidden" name="Ds_Merchant_Order" value="00001">
   <input type="hidden" name="Ds_Merchant_MerchantCode" value="170043343">
   <input type="hidden" name="Ds_Merchant_Currency" value="978">
   <input type="hidden" name="Ds_Merchant_TransactionType" value="0">
   <input type="hidden" name="Ds_Merchant_Terminal" value="100">
-
-  <!-- Campos obligatorios en entorno seguro -->
-  <input type="hidden" name="Ds_Merchant_MerchantURL" value="">
-  <input type="hidden" name="Ds_Merchant_UrlOK" value="">
-  <input type="hidden" name="Ds_Merchant_UrlKO" value="">
-
-  <!-- Campos encriptados (deben ser generados con clave secreta) -->
-  <input type="hidden" name="Ds_Merchant_Parameters" value="">
-  <input type="hidden" name="Ds_Merchant_Signature" value="">
 </form>
 
 </body>
