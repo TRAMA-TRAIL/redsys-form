@@ -4,27 +4,28 @@
   <meta charset="UTF-8">
   <title>Iniciando pago...</title>
   <script>
-    window.onload = function() {
+    window.onload = function () {
       const urlParams = new URLSearchParams(window.location.search);
       const importe = urlParams.get('importe');
 
-      // Generar número de pedido incremental (usa localStorage para simularlo)
+      // Generar número de pedido incremental
       let orderId = localStorage.getItem("redsys_order_id") || "0";
       orderId = (parseInt(orderId) + 1).toString();
       localStorage.setItem("redsys_order_id", orderId);
 
-      // Rellenar número con 5 dígitos (ej: 1 → 00001)
+      // Formato de 5 dígitos
       const paddedOrderId = orderId.padStart(5, '0');
 
       // Asignar al formulario
       document.querySelector("input[name='Ds_Merchant_Order']").value = paddedOrderId;
 
       if (importe && !isNaN(importe)) {
-        // Convertir a céntimos y asignar al campo
-        document.querySelector("input[name='Ds_Merchant_Amount']").value = Math.round(parseFloat(importe) * 100);
+        // Convertir a céntimos
+        const amountCents = Math.round(parseFloat(importe) * 100).toString();
+        document.querySelector("input[name='Ds_Merchant_Amount']").value = amountCents;
       }
 
-      // Enviar formulario automáticamente después de 1 segundo
+      // Enviar formulario automáticamente
       setTimeout(() => {
         document.forms[0].submit();
       }, 1000);
@@ -35,24 +36,25 @@
 
 <h2>Procesando tu pago…</h2>
 
-<form action="https://sis-t.redsys.es:25443/sis/tpv.jsp"  method="POST">
-  <!-- Campo dinámico -->
+<form action="https://sis-t.redsys.es:25443/sis/realizarPago"  method="POST">
+  <!-- Datos dinámicos -->
   <input type="hidden" name="Ds_Merchant_Amount" value="">
+  <input type="hidden" name="Ds_Merchant_Order" value="">
 
   <!-- Datos estáticos -->
-  <input type="hidden" name="Ds_Merchant_Order" value="">
   <input type="hidden" name="Ds_Merchant_MerchantCode" value="170043343">
-  <input type="hidden" name="Ds_Merchant_Currency" value="978"> <!-- Euros -->
-  <input type="hidden" name="Ds_Merchant_TransactionType" value="0"> <!-- Venta normal -->
-  <input type="hidden" name="Ds_Merchant_Terminal" value="100"> <!-- Terminal corregido -->
+  <input type="hidden" name="Ds_Merchant_Currency" value="978">
+  <input type="hidden" name="Ds_Merchant_TransactionType" value="0">
+  <input type="hidden" name="Ds_Merchant_Terminal" value="100">
 
-  <!-- Opcionales por ahora -->
-  <input type="hidden" name="Ds_Merchant_MerchantURL" value=""> <!-- No usamos por ahora -->
-  <input type="hidden" name="Ds_Merchant_UrlOK" value=""> <!-- No usamos por ahora -->
-  <input type="hidden" name="Ds_Merchant_UrlKO" value=""> <!-- No usamos por ahora -->
+  <!-- Campos obligatorios en entorno seguro -->
+  <input type="hidden" name="Ds_Merchant_MerchantURL" value="">
+  <input type="hidden" name="Ds_Merchant_UrlOK" value="">
+  <input type="hidden" name="Ds_Merchant_UrlKO" value="">
 
-  <!-- Opcional: Nombre del comercio -->
-  <input type="hidden" name="Ds_Merchant_MerchantName" value="Trama Trail">
+  <!-- Campos encriptados (deben ser generados con clave secreta) -->
+  <input type="hidden" name="Ds_Merchant_Parameters" value="">
+  <input type="hidden" name="Ds_Merchant_Signature" value="">
 </form>
 
 </body>
